@@ -22,17 +22,17 @@ const (
 )
 
 var (
-	debug		 bool
-	recipients   string
-	gapDir       string
-	hostname     string
-	gapCountName string
-	gapFileGlob  string
-	subjectLine  string
-	fqnGapFile   string
-	compressedSize   int64
-	maxTransferSize  int64
-	fqnComprFile *os.File
+	debug             bool
+	recipients        string
+	gapDir            string
+	hostname          string
+	gapCountName      string
+	gapFileGlob       string
+	subjectLine       string
+	fqnGapFile        string
+	compressedSize    int64
+	maxTransferSize   int64
+	fqnCompressedFile *os.File
 )
 
 type byModificationTime []os.FileInfo
@@ -45,7 +45,7 @@ func main() {
 
 	parseArgs()
     readGapFiles(&fqnGapFile)
-	fqnComprFile = compress(&compressedSize)
+	fqnCompressedFile = compress(&compressedSize)
 	lastLines := getRecentGapMessages()
 	mailArgs := createMailArgs()
 	sendMailWithAttachment(lastLines, mailArgs)
@@ -209,7 +209,7 @@ func createMailArgs() []string {
 		subjectLine += " without gap file attachment"
 		mailArgs = append(mailArgs, subjectLine)
 	} else {
-		mailArgs = append(mailArgs, subjectLine, "-a", fqnComprFile.Name())
+		mailArgs = append(mailArgs, subjectLine, "-a", fqnCompressedFile.Name())
 	}
 
 	mailArgs = append(mailArgs, recipients)
